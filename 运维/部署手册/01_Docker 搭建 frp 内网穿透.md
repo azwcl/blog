@@ -12,8 +12,8 @@
 1. 创建配置文件，即 frps.toml 文件
 
     ```shell
-    mkdir -p /data/frps
-    cd /data/frps
+    mkdir -p /app/frps
+    cd /app/frps
     vim frps.toml
     ```
 
