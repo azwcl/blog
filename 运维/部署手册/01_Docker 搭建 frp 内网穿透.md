@@ -1,6 +1,8 @@
 # Docker 搭建 frp 内网穿透
-## 1. 目标
+## 1. 目标 & 概述
 - 内网之中有一台服务器需要暴露在公网，但是没有 公网 地址；需要通过一台外网服务器做中转暴露到公网服务器；
+- 适用于 0.60.0 版本配置；
+- **归档**，搭建详细见 frp 官方手册：https://gofrp.org/zh-cn/docs/overview/
 
 ## 2. 准备
 - 一台家用服务器 (已经装好 `docker`)
@@ -8,7 +10,6 @@
 
 ## 3. 搭建
 ### 3.1. frp server 搭建
-
 1. 创建配置文件，即 frps.toml 文件
 
     ```shell
@@ -32,7 +33,7 @@
     # 设置http及https协议下代理端口（非重要）
     vhost_http_port = 7080
     vhost_https_port = 7081
-    
+
     # 身份验证 token ; 客户端需要
     token = 随机字符串 客户需要这里的 token
     ```
@@ -46,7 +47,7 @@
     --restart=always \
     --network host -d \
     -v /app/frps/frps.toml:/etc/frp/frps.toml \
-    --name frps snowdreamtech/frps
+    --name frps snowdreamtech/frps:0.60.0
     # 检查是否正常运行
     docker ps -a 
     ```
@@ -62,13 +63,13 @@
     server_port = 7000
     # 身份验证，与frps.toml中保存一致
     token = 上面服务器端的 token
-    
+
     [ssh]
     type = tcp
     local_ip = 127.0.0.1
     local_port = 22
     remote_port = 2288
-    
+
     # [ssh] 为服务名称，下方此处设置为，访问frp服务段的2288端口时，等同于通过中转服务器访问127.0.0.1的22端口。
     # type 为连接的类型，此处为tcp
     # local_ip 为中转客户端实际访问的IP 
@@ -80,13 +81,13 @@
     ```shell
     # 拉取镜像
     docker pull snowdreamtech/frpc
-    
+
     # -v 参数挂载修改
     docker run --restart=always \
     --network host -d \
-    -v /data/frpc/frpc.toml:/etc/frp/frpc.toml \
-    --name frpc snowdreamtech/frpc
-    
+    -v /app/frpc/frpc.toml:/etc/frp/frpc.toml \
+    --name frpc snowdreamtech/frpc:0.60.0
+
     # 检查运行
     docker ps -a
     ```
